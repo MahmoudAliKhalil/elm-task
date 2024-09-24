@@ -34,17 +34,15 @@ Make sure you have the following software installed:
    ```sh
    cd /elm-task
    ```
-
 3. **Build the Project:**
     - **For Linux and Unix-based systems:** Execute the following command:
        ```sh
-       ./mvnw /elm-task
+       ./mvnw package
        ```
     - **For Windows:** Run the command below:
        ```sh
-       ./mvnw.cmd /elm-task
+       ./mvnw.cmd package
        ```
-
 4. **Run the application using Docker Compose:**
    ```sh
    docker-compose up
