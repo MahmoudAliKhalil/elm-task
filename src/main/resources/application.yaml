@@ -1,0 +1,49 @@
+server:
+  servlet:
+    context-path: /api
+
+spring:
+  application:
+    name: elm-service
+  datasource:
+    url: jdbc:mysql://localhost:3306/elm
+    username: root
+    password: 1234
+  jpa:
+    open-in-view: false
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          authorities-claim-name: role
+          authority-prefix: ""
+  mvc:
+    problemdetails:
+      enabled: true
+
+com:
+  github:
+    mahmoudalikhalil:
+      jwt:
+        not-before: 2m
+        expiration: 24h
+        allowed-clock-skew: 30s
+        private-key: classpath:/key.pem
+        public-key: classpath:/public_key.pem
+
+management:
+  health:
+    livenessState:
+      enabled: true
+    readinessState:
+      enabled: true
+  endpoint:
+    health:
+      probes:
+        enabled: true
+
+logging:
+  level:
+    org:
+      springframework:
+        security: TRACE

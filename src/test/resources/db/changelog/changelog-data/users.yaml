@@ -1,0 +1,102 @@
+databaseChangeLog:
+  -  changeSet:
+       id: test-1
+       author:  test
+       runOrder: last
+       changes:
+         -  insert:
+              tableName: user
+              columns:
+                -  column:
+                     name: username
+                     value: 'adminTest'
+                -  column:
+                     name: password
+                     value: '{bcrypt}$2a$10$td.HAE6HS7mBpPcbwdp50u8RLfaEUBvSKXBaYSMHGLx3LX7ACLJoW'
+                -  column:
+                     name: email
+                     value: 'adminTest@example.com'
+                -  column:
+                     name: role
+                     value: 'ADMIN'
+                -  column:
+                     name: status
+                     value: 'ACTIVE'
+                -  column:
+                     name: created_at
+                     value: '2024-09-22 04:00:00'
+                -  column:
+                     name: updated_at
+                     value: '2024-09-22 04:00:00'
+         -  insert:
+              tableName: user
+              columns:
+                -  column:
+                     name: username
+                     value: 'dealerTest'
+                -  column:
+                     name: password
+                     value: '{bcrypt}$2a$10$td.HAE6HS7mBpPcbwdp50u8RLfaEUBvSKXBaYSMHGLx3LX7ACLJoW'
+                -  column:
+                     name: email
+                     value: 'dealerTest@example.com'
+                -  column:
+                     name: role
+                     value: 'DEALER'
+                -  column:
+                     name: status
+                     value: 'ACTIVE'
+                -  column:
+                     name: created_at
+                     value: '2024-09-22 05:00:00'
+                -  column:
+                     name: updated_at
+                     value: '2024-09-22 05:00:00'
+         -  insert:
+              tableName: user
+              columns:
+                -  column:
+                     name: username
+                     value: 'test'
+                -  column:
+                     name: password
+                     value: '{bcrypt}$2a$10$td.HAE6HS7mBpPcbwdp50u8RLfaEUBvSKXBaYSMHGLx3LX7ACLJoW'
+                -  column:
+                     name: email
+                     value: 'test@example.com'
+                -  column:
+                     name: role
+                     value: 'CLIENT'
+                -  column:
+                     name: status
+                     value: 'ACTIVE'
+                -  column:
+                     name: created_at
+                     value: '2024-09-22 06:00:00'
+                -  column:
+                     name: updated_at
+                     value: '2024-09-22 06:00:00'
+         -  insert:
+              tableName: user
+              columns:
+                -  column:
+                     name: username
+                     value: 'dealerTest2'
+                -  column:
+                     name: password
+                     value: '{bcrypt}$2a$10$td.HAE6HS7mBpPcbwdp50u8RLfaEUBvSKXBaYSMHGLx3LX7ACLJoW'
+                -  column:
+                     name: email
+                     value: 'dealerTest2@example.com'
+                -  column:
+                     name: role
+                     value: 'DEALER'
+                -  column:
+                     name: status
+                     value: 'ACTIVE'
+                -  column:
+                     name: created_at
+                     value: '2024-09-22 07:00:00'
+                -  column:
+                     name: updated_at
+                     value: '2024-09-22 07:00:00'

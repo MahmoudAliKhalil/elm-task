@@ -1,0 +1,28 @@
+version: '3.8'
+services:
+  db:
+    image: mysql:lts
+    restart: unless-stopped
+    env_file:
+      - ./.env
+    environment:
+      - MYSQL_RANDOM_ROOT_PASSWORD=YES
+    volumes:
+      - db:/var/lib/mysql
+  api:
+    depends_on:
+      - db
+    build: .
+    restart: on-failure
+    env_file:
+      - ./.env
+    ports:
+      - '8080:8080'
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/$MYSQL_DATABASE?useSsl=true
+      - SPRING_DATASOURCE_USERNAME=$MYSQL_USER
+      - SPRING_DATASOURCE_PASSWORD=$MYSQL_PASSWORD
+    stdin_open: true
+    tty: true
+volumes:
+  db:

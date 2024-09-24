@@ -1,0 +1,13 @@
+spring:
+  liquibase:
+    change-log: classpath:/db/changelog/db.changelog-test.yaml
+
+com:
+  github:
+    mahmoudalikhalil:
+      jwt:
+        not-before: 2m
+        expiration: 24h
+        allowed-clock-skew: 30s
+        private-key: classpath:/key.pem
+        public-key: classpath:/public_key.pem

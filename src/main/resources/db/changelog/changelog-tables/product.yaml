@@ -1,0 +1,72 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: mak
+      changes:
+        - createTable:
+            tableName: product
+            columns:
+              - column:
+                  name: id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: price
+                  type: decimal(10, 2)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: int
+                  constraints:
+                    nullable: false
+                    foreignKeyName: product_user_fk
+                    referencedTableName: user
+                    referencedColumnNames: id
+              - column:
+                  name: status
+                  type: enum('ACTIVE', 'INACTIVE')
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: datetime
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_at
+                  type: datetime
+                  constraints:
+                    nullable: false
+        -  insert:
+             tableName: user
+             columns:
+               -  column:
+                    name: username
+                    value: 'admin'
+               -  column:
+                    name: password
+                    value: '{bcrypt}$2a$10$td.HAE6HS7mBpPcbwdp50u8RLfaEUBvSKXBaYSMHGLx3LX7ACLJoW'
+               -  column:
+                    name: email
+                    value: 'admin@example.com'
+               -  column:
+                    name: role
+                    value: 'ADMIN'
+               -  column:
+                    name: status
+                    value: 'ACTIVE'
+               -  column:
+                    name: created_at
+                    value: '2024-09-20 00:00:00'
+               -  column:
+                    name: updated_at
+                    value: '2024-09-20 00:00:00'

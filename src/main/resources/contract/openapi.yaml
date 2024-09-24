@@ -1,0 +1,699 @@
+openapi: 3.0.3
+info:
+  title: Elm Task API
+  version: 1.0.0
+  description: >
+    The Elm Task API allows users to perform authentication, manage user accounts, and handle product operations 
+    for dealers and admins. This API is designed to facilitate seamless interactions between clients and the 
+    platform, ensuring secure and efficient operations.
+
+
+servers:
+  - url: http://makelmtask.ddns.net:8080/api
+    description: Base URL for the Elm Task API
+
+
+paths:
+  /login:
+    post:
+      summary: Authenticate User
+      operationId: loginUser
+      tags:
+        - Login
+      requestBody:
+        description: The request body must include the user's credentials (username and password) to authenticate and receive a JWT token.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: User login successful; returns a JWT token for future requests.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+
+  /register:
+    post:
+      summary: Register New Client User
+      operationId: registerClient
+      tags:
+        - Registration
+      requestBody:
+        description: The request must contain details necessary for creating a new client user account, including a username, email, and password.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClientUserRegistrationRequest'
+      responses:
+        '200':
+          description: User registered successfully; ready to log in.
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+
+  /users/create:
+    post:
+      summary: Create New Admin or Dealer User
+      operationId: registerAdminOrDealer
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - Registration
+      requestBody:
+        description: Provides necessary information to register an admin or dealer user. The request must specify the role as either ADMIN or DEALER.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SuperUserRegistrationRequest'
+      responses:
+        '200':
+          description: Admin or dealer user created successfully.
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+
+  /users/{id}/change-status:
+    post:
+      summary: Update User Status
+      operationId: changeUserStatus
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - User
+      parameters:
+        - name: id
+          in: path
+          description: Unique identifier of the user whose status is to be changed.
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: User status updated successfully.
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+        '409':
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+
+  /products:
+    get:
+      summary: Retrieve Dealer Products
+      operationId: retrieveDealerProducts
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - Product
+      parameters:
+        - name: page
+          in: query
+          description: Page number for paginated results; defaults to 0 for the first page.
+          required: false
+          schema:
+            type: integer
+            default: 0
+            minimum: 0
+        - name: size
+          in: query
+          description: Number of products to return per page; defaults to 20, with a minimum of 1.
+          required: false
+          schema:
+            type: integer
+            default: 20
+            minimum: 1
+      responses:
+        '200':
+          description: List of dealer products retrieved successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DealerProductResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+
+  /products/admin:
+    get:
+      summary: Retrieve All Products (Admin)
+      operationId: retrieveAllProducts
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - Product
+      parameters:
+        - name: page
+          in: query
+          description: Page number for paginated results; defaults to 0 for the first page.
+          required: false
+          schema:
+            type: integer
+            default: 0
+            minimum: 0
+        - name: size
+          in: query
+          description: Number of products to return per page; defaults to 20, with a minimum of 1.
+          required: false
+          schema:
+            type: integer
+            default: 20
+            minimum: 1
+      responses:
+        '200':
+          description: Successfully retrieves all products.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+
+  /products/user:
+    get:
+      summary: Retrieve All Active Products (User)
+      operationId: retrieveActiveProducts
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - Product
+      parameters:
+        - name: page
+          in: query
+          description: Page number for paginated results; defaults to 0 for the first page.
+          required: false
+          schema:
+            type: integer
+            default: 0
+            minimum: 0
+        - name: size
+          in: query
+          description: Number of products to return per page; defaults to 20, with a minimum of 1.
+          required: false
+          schema:
+            type: integer
+            default: 20
+            minimum: 1
+      responses:
+        '200':
+          description: Successfully retrieves all active products.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+
+  /products/add:
+    post:
+      summary: Create a New Product
+      operationId: createProduct
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - Product
+      requestBody:
+        description: Product creation request
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductCreationRequest'
+      responses:
+        '200':
+          description: Product created successfully.
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+
+  /products/{id}/change-status:
+    post:
+      summary: Change Product Status
+      operationId: changeProductStatus
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - Product
+      parameters:
+        - name: id
+          in: path
+          description: ID of the product to be updated.
+          required: true
+          schema:
+            type: integer
+            format: int64
+            example: 1
+      responses:
+        '200':
+          description: Product status updated successfully.
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+
+  /products/statistics:
+    get:
+      summary: Retrieve Product Statistics
+      operationId: getProductsStatistics
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - Product
+      parameters:
+        - name: from
+          in: query
+          description: Start date for filtering statistics.
+          required: false
+          schema:
+            type: string
+            format: date
+            example: "2024-01-01"
+        - name: to
+          in: query
+          description: End date for filtering statistics.
+          required: false
+          schema:
+            type: string
+            format: date
+            example: "2024-09-24"
+      responses:
+        '200':
+          description: Successfully retrieves statistics.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatisticsResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+
+components:
+  schemas:
+    ClientUserRegistrationRequest:
+      type: object
+      required:
+        - username
+        - email
+        - password
+      properties:
+        username:
+          type: string
+          example: dummyUser
+        email:
+          type: string
+          format: email
+          example: dummyuser@example.com
+        password:
+          type: string
+          format: password
+          minLength: 8
+          example:
+    SuperUserRegistrationRequest:
+      allOf:
+        - $ref: '#/components/schemas/ClientUserRegistrationRequest'
+        - type: object
+          required:
+            - role
+          properties:
+            role:
+              type: string
+              enum:
+                - ADMIN
+                - DEALER
+              example: ADMIN
+    LoginRequest:
+      type: object
+      required:
+        - username
+        - password
+      properties:
+        username:
+          type: string
+          example: User username
+        password:
+          type: string
+          example: password
+          minLength: 8
+    LoginResponse:
+      type: object
+      properties:
+        token:
+          type: string
+          example: eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJleHAiOjE3MjcxNDAyMzIsImlhdCI6MTcyNzA1MzgzMiwic3ViIjoiMSIsInJvbGUiOiJBRE1JTiJ9.BXL3AsLFjs9WawqvKGsYJ0tYl7EN4GZpEhQ-3uPfWQMfHAjNOyg82hO3aAWtHhVPLFT6y-O5yZZnngoeTFH7Lrdcgb81408S0B8ibZ6TLeqxtl8VkRDBHuvHy6EgcZ9JgPzdQPv6vYnG_oD6qUVlycT-I6a25WxLPF-q_DXu56MbCiZfjOcJr1spNKeDtwOkKAkUB9M0bG_BJxQJyYsnQATX6zdJOAPJSm3_aWhAFx58dxOFImoT1pZ4-4IiGXHMjN30hRRcJRy4izLy1oMfM_i4bpH2rWYdh97VEPUCw0YgBN4qS3XjFDSZnZeFvl0LtqXI6EZu3QU47OKROGYH6g
+    DealerProductResponse:
+      type: object
+      properties:
+        total:
+          type: integer
+          format: int64
+          example: 20
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/DealerProduct'
+    ProductResponse:
+      type: object
+      properties:
+        total:
+          type: integer
+          format: int64
+          example: 20
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Product'
+    DealerProduct:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        name:
+          type: string
+        price:
+          type: number
+          format: double
+        status:
+          type: string
+          enum:
+            - ACTIVE
+            - INACTIVE
+    Product:
+      allOf:
+        - $ref: '#/components/schemas/DealerProduct'
+        - type: object
+          properties:
+            dealerName:
+              type: string
+    ProductCreationRequest:
+      type: object
+      required:
+        - name
+        - price
+      properties:
+        name:
+          type: string
+          example: Dummy Product
+        price:
+          type: number
+          format: double
+          minimum: 0
+          example: 59.99
+    StatisticsResponse:
+      type: object
+      properties:
+        products:
+          $ref: '#/components/schemas/ProductsStatistics'
+        dealers:
+          $ref: '#/components/schemas/DealersStatistics'
+        clients:
+          $ref: '#/components/schemas/ClientsStatistics'
+    ProductsStatistics:
+      type: object
+      properties:
+        totalProducts:
+          type: integer
+          format: int64
+          example: 40
+        active:
+          type: integer
+          format: int64
+          example: 30
+        inactive:
+          type: integer
+          format: int64
+          example: 10
+        totalPrice:
+          type: number
+          format: double
+          example: 80000.00
+        lowest:
+          $ref: '#/components/schemas/Product'
+        highest:
+          $ref: '#/components/schemas/Product'
+    DealersStatistics:
+      type: object
+      properties:
+        total:
+          type: integer
+          format: int64
+        hasProducts:
+          type: integer
+          format: int64
+        hasNoProducts:
+          type: integer
+          format: int64
+    ClientsStatistics:
+      type: object
+      properties:
+        total:
+          type: integer
+          format: int64
+        active:
+          type: integer
+          format: int64
+        inactive:
+          type: integer
+          format: int64
+    ProblemDetail:
+      description: Representation for an RFC 7807 problem detail.
+      type: object
+      properties:
+        type:
+          description: A URI reference that identifies the problem type
+          type: string
+          format: uri
+          default: about:blank
+        title:
+          description: A short, human-readable summary of the problem type
+          type: string
+        status:
+          description: The HTTP status code generated by the origin server for this occurrence of the problem
+          type: integer
+          format: int32
+        detail:
+          description: A human-readable explanation specific to this occurrence of the problem
+          type: string
+        instance:
+          description: A URI reference that identifies the specific occurrence of the problem
+          type: string
+      additionalProperties: true
+      required:
+        - type
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
