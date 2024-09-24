@@ -20,6 +20,7 @@ Follow these instructions to set up the project on your local machine.
 
 Make sure you have the following software installed:
 
+- Java 21 or Higher
 - [Docker](https://www.docker.com/get-started)
 
 ### Installation
@@ -33,6 +34,17 @@ Make sure you have the following software installed:
    ```sh
    cd /elm-task
    ```
+
+3. **Build the Project:**
+    - **For Linux and Unix-based systems:** Execute the following command:
+       ```sh
+       ./mvnw /elm-task
+       ```
+    - **For Windows:** Run the command below:
+       ```sh
+       ./mvnw.cmd /elm-task
+       ```
+
 4. **Run the application using Docker Compose:**
    ```sh
    docker-compose up
