@@ -9,7 +9,7 @@ info:
 
 
 servers:
-  - url: http://makelmtask.ddns.net:8080/api
+  - url: http://localhost:8080/api
     description: Base URL for the Elm Task API
 
 
